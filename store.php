@@ -33,6 +33,11 @@
 		{
 			$Username = $_SESSION["Username"];
 		}
+		
+		$ID = null;
+		if(!empty($_GET['ID'])){
+			$ID = $_GET['ID'];
+		}
 		?>
 
     </head>
@@ -178,13 +183,10 @@
 				<div id="responsive-nav">
 					<!-- NAV -->
 					<ul class="main-nav nav navbar-nav">
-						<li class="active"><a href="store.php">Home</a></li>
-						<li><a href="Ofertas.php">Mejores Ofertas</a></li>
-						<li><a href="Categorias.php">Categorias</a></li>
-						<li><a href="Laptops.php">Laptops</a></li>
-						<li><a href="Smartphone.php">Smartphones</a></li>
-						<li><a href="Camaras.php">Cámaras</a></li>
-						<li><a href="Accesorios.php">Accesorios</a></li>
+						<li><a href="<?php if($ID==null){echo "index.php";}else{ echo "index.php?ID=$ID";}?>">Home</a></li>
+						<li><a href="<?php if($ID==null){echo "store.php";}else{ echo "store.php?ID=$ID";}?>">Tienda</a></li>
+						<li><a href="nosotros.php">Nosotros</a></li>
+						<li><a href="ayuda.php">Ayuda</a></li>
 					</ul>
 					<!-- /NAV -->
 				</div>

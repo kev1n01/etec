@@ -2075,7 +2075,7 @@ textarea.input {
 
 .footer-links li i {
   margin-right: 15px;
-  color: #d10024;
+  color: #5c5657;
   width: 14px;
   text-align: center;
 }
@@ -2092,11 +2092,11 @@ textarea.input {
 
 .footer-payments li {
   display: inline-block;
-  margin-right: 5px;
+  margin-right: 6px;
 }
 
 .footer-payments li a {
-  color: #15161d;
+  color: #070707;
   font-size: 36px;
   display: block;
 }

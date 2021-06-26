@@ -27,6 +27,7 @@
 
 	<!-- Custom stlylesheet -->
 	<link type="text/css" rel="stylesheet" href="css/style.css" />
+	<link rel="icon" href="img/favi.ico" type="image/x-icon">
 
 	<?php
 	$Username = null;

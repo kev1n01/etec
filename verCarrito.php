@@ -28,6 +28,8 @@
 
     <!-- Custom stlylesheet -->
     <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <link rel="icon" href="img/favi.ico" type="image/x-icon">
+
     <?php
     $Username = null;
     if (!empty($_SESSION["Username"])) {
@@ -71,7 +73,188 @@
             </div>
         </div>
         <!-- /TOP HEADER -->
+        <!-- MAIN HEADER -->
+		<div id="header">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<!-- LOGO -->
+					<div class="col-md-3">
+						<div class="header-logo">
+							<a href="index.php" class="logo">
+								<img src="./img/logo.png">
+							</a>
+						</div>
+					</div>
+					<!-- /LOGO -->
+
+					<!-- SEARCH BAR -->
+					<div class="col-md-6">
+						<div class="header-search">
+							<form>
+								<select class="input-select">
+									<option value="0">Categorias</option>
+									<?php $conn = mysqli_connect("localhost", "root", "Ggnoobsdemrd2001", "etec");
+									$sql = "SELECT * FROM categoria";
+									$Resulta = mysqli_query($conn, $sql);
+									while ($Rows = mysqli_fetch_array($Resulta)) {
+										echo '
+										<option value="' . $Rows[0] . '">' . $Rows[1] . '</option>
+									';
+									} ?>
+								</select>
+								<input class="input" placeholder="Buscar aquí">
+								<button class="search-btn">Buscar</button>
+							</form>
+						</div>
+					</div>
+					<!-- /SEARCH BAR -->
+
+					<!-- ACCOUNT -->
+					<div class="col-md-3 clearfix">
+						<div class="header-ctn">
+							<!-- Wishlist -->
+							<div>
+								<a href="#">
+									<i class="fa fa-heart-o"></i>
+									<span>Tus Deseos</span>
+									<div class="qty">0</div>
+								</a>
+							</div>
+							<!-- /Wishlist -->
+
+							<!-- Cart -->
+							<div class="dropdown">
+								<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+									<i class="fa fa-shopping-cart"></i>
+									<span>Tu carrito</span>
+									<?php
+									if ($ID == null) {
+											
+									} else {
+										$conn = mysqli_connect("localhost", "root", "Ggnoobsdemrd2001", "etec");
+										$sql = "SELECT COUNT(*) as cont FROM carrito WHERE idcliente=$ID";
+										$Resulta = mysqli_query($conn, $sql);
+										foreach ($Resulta as $row) {
+											$cont = $row["cont"];
+										}
+									}
+									?>
+
+									<div class="qty"><?php if ($ID == null) {
+															echo "0";
+														} else {
+															echo $cont;
+														} ?></div>
+								</a>
+								<?php
+								$conn = mysqli_connect("localhost", "root", "Ggnoobsdemrd2001", "etec");
+								$sql = "SELECT productos.idproductos, productos.nombre,productos.imgProducto, productos.precio, marca,carrito.idcliente,
+									ROUND(productos.precio-(productos.precio*(productos.descuento/100))) as 'precio descuento'
+									FROM productos
+									INNER JOIN carrito
+									ON productos.idproductos = carrito.id_producto INNER JOIN marca ON productos.id_marca_productos = marca.idmarca
+									WHERE carrito.idcliente = '$ID'";
+								$Resulta = mysqli_query($conn, $sql);
+
+								?>
+
+								<div class="cart-dropdown">
+									<div class="cart-list">
+										<?php while ($Rows = mysqli_fetch_array($Resulta)) : ?>
+											<div class="product-widget">
+												<div class="product-img">
+													<img src="img/<?php echo $Rows[2]; ?>" alt="">
+												</div>
+												<div class="product-body">
+													<h3 class="product-name"><a href="#"><?php echo $Rows[1]; ?></a></h3>
+													<h4 class="product-brand"><a href="#"><?php echo $Rows[4]; ?></a></h4>
+													<h4 class="product-price"><span class="qty">1x</span>S/.<?php if ($Rows[6] == null) {
+																												echo $Rows[3];
+																											} else {
+																												echo $Rows[6];
+																											} ?></h4>
+												</div>
+												<form action="eliminarCarrito.php" method="post">
+													<input type="hidden" name="id_cliente" value="<?php echo $Rows[5]; ?>">
+													<input type="hidden" name="id_producto" value="<?php echo $Rows[0]; ?>">
+													<button class="delete"><i class="fa fa-close"></i></button>
+												</form>
+											</div>
+										<?php endwhile; ?>
+									</div>
+									<div class="cart-summary">
+										<?php
+										
+
+										if ($ID == null) {
+											
+										} else {
+											$conn = mysqli_connect("localhost", "root", "Ggnoobsdemrd2001", "etec");
+											$sql = "SELECT COUNT(*) as 'cont', sum(ROUND(productos.precio-(productos.precio*(productos.descuento/100)))) as 'desctotal', sum(productos.precio) as 'totalnodesc'
+											FROM productos INNER JOIN carrito ON productos.idproductos = carrito.id_producto 
+											WHERE carrito.idcliente = $ID";
+
+											$Resultapre = mysqli_query($conn, $sql);
+											foreach ($Resultapre as $row) {
+												$totalConDesc = $row["desctotal"];
+												$totalSinDesc = $row["totalnodesc"];
+												$cont = $row["cont"];
+											}
+										}
+										
+										?>
+										<small><?php if ($ID == null) {
+													echo "0";
+												} else {
+													if ($cont == null)
+														echo "0";
+													else
+														echo $cont;
+												} ?> Item(s) seleccionados</small>
+										<h5>
+											SUBTOTAL: S/.<?php if ($ID == null) {
+																echo "00.00";
+															} else {
+																if ($totalConDesc == null) {
+																	echo $totalSinDesc;
+																} else {
+																	echo $totalConDesc;
+																}
+															} ?>
+										</h5>
+									</div>
+									<div class="cart-btns">
+										<a href="verCarrito.php?ID=<?php echo $ID; if($cont!=null){ echo "&Row=$cont";}else{echo "0";} ?>" type="submit">Ver carrito</a>
+
+										<a href="checkout.php">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+									</div>
+
+								</div>
+							</div>
+							<!-- /Cart -->
+
+							<!-- Menu Toogle -->
+							<div class="menu-toggle">
+								<a href="#">
+									<i class="fa fa-bars"></i>
+									<span>Menu</span>
+								</a>
+							</div>
+							<!-- /Menu Toogle -->
+						</div>
+					</div>
+					<!-- /ACCOUNT -->
+				</div>
+				<!-- row -->
+			</div>
+			<!-- container -->
+		</div>
+		<!-- /MAIN HEADER -->
+
     </header>
+    
     <!-- NAVIGATION -->
     <nav id="navigation">
         <!-- container -->
@@ -102,32 +285,40 @@
     <!-- /NAVIGATION -->
 
     <?php
+    $ID = null;
+    if (!empty($_GET['ID'])) {
+        $ID = $_GET['ID'];
+    } 
 
-    $ID = $_GET["ID"];
-    $CONT = $_GET["Row"];
+    $CONT = null;
 
+    if (!empty($_GET['Row'])) {
+        $CONT = $_GET['Row'];
+    } 
+    
 
     $conn = mysqli_connect("localhost", "root", "Ggnoobsdemrd2001", "etec");
     $sql = " SELECT pro.idproductos, pro.nombre, pro.color,pro.precio,ROUND(pro.precio-(pro.precio*(pro.descuento/100))) as 'preciodescuento',
-pro.stock,pro.imgProducto,c.idcliente
-    FROM productos as pro
-    INNER JOIN carrito as c
-    ON pro.idproductos = c.id_producto
-    WHERE c.idcliente=$ID
-";
+    pro.stock,pro.imgProducto,c.idcliente
+        FROM productos as pro
+        INNER JOIN carrito as c
+        ON pro.idproductos = c.id_producto
+        WHERE c.idcliente=$ID
+    ";
 
     $productos = mysqli_query($conn, $sql);
-    if ($CONT <= 0) {
+
+    if ($CONT == 0) {
     ?>
         <section class="hero is-info">
             <div class="hero-body">
                 <div class="container">
                     <h1 class="title">
-                        Tu carrito está vacio no sea pendejo :)>-< </h1>
+                        Tu carrito está vacio¡¡</h1>
                             <h2 class="subtitle">
                                 Visita la tienda para agregar productos a tu carrito
                             </h2>
-                            <a href="store.php?ID=<?php echo $ID; ?>" class="button is-warning">Ver tienda</a>
+                            <a href="store.php?ID=<?php echo $ID; ?>" class="btn btn-danger">Ir tienda</a>
                 </div>
             </div>
         </section>
@@ -191,7 +382,7 @@ pro.stock,pro.imgProducto,c.idcliente
                             </tr>
                         </tfoot>
                     </table>
-                    <button href="terminar_compra.php" class="primary-btn order-submit"><i class="fa fa-check"></i>&nbsp;Terminar compra</button>
+                    <a href="checkout.php?ID=<?php echo $ID; ?>" class="primary-btn order-submit"><i class="fa fa-check"></i>&nbsp;Terminar compra</a>
                 </div>
             </div>
         </div>
@@ -206,7 +397,7 @@ pro.stock,pro.imgProducto,c.idcliente
     <script src="js/nouislider.min.js"></script>
     <script src="js/jquery.zoom.min.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/funciones.js"></script>
+    <!-- <script src="js/funciones.js"></script> -->
     <script src="js/reloj/countdown-timezone/js/countdown.js"></script>
     <script src="js/reloj/countdown-timezone/js/countdown.jquery.js"></script>
 </body>

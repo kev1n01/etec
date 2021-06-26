@@ -28,6 +28,9 @@
 
 	<!-- Custom stlylesheet -->
 	<link type="text/css" rel="stylesheet" href="css/style.css" />
+
+	<link rel="icon" href="img/favi.ico" type="image/x-icon">
+	
 	<?php
 	$Username = null;
 	if (!empty($_SESSION["Username"])) {
@@ -128,11 +131,15 @@
 									<i class="fa fa-shopping-cart"></i>
 									<span>Tu carrito</span>
 									<?php
-									$conn = mysqli_connect("localhost", "root", "Ggnoobsdemrd2001", "etec");
-									$sql = "SELECT COUNT(*) as cont FROM carrito WHERE idcliente=$ID";
-									$Resulta = mysqli_query($conn, $sql);
-									foreach ($Resulta as $row) {
-										$cont = $row["cont"];
+									if ($ID == null) {
+											
+									} else {
+										$conn = mysqli_connect("localhost", "root", "Ggnoobsdemrd2001", "etec");
+										$sql = "SELECT COUNT(*) as cont FROM carrito WHERE idcliente=$ID";
+										$Resulta = mysqli_query($conn, $sql);
+										foreach ($Resulta as $row) {
+											$cont = $row["cont"];
+										}
 									}
 									?>
 
@@ -180,21 +187,24 @@
 									</div>
 									<div class="cart-summary">
 										<?php
-										$conn = mysqli_connect("localhost", "root", "Ggnoobsdemrd2001", "etec");
-										$sql = "SELECT COUNT(*) as 'cont', sum(ROUND(productos.precio-(productos.precio*(productos.descuento/100)))) as 'desctotal', sum(productos.precio) as 'totalnodesc'
-										FROM productos INNER JOIN carrito ON productos.idproductos = carrito.id_producto 
-										WHERE carrito.idcliente = $ID";
+										
 
-										$Resultapre = mysqli_query($conn, $sql);
-
-										if ($Resultapre == null) {
+										if ($ID == null) {
+											
 										} else {
+											$conn = mysqli_connect("localhost", "root", "Ggnoobsdemrd2001", "etec");
+											$sql = "SELECT COUNT(*) as 'cont', sum(ROUND(productos.precio-(productos.precio*(productos.descuento/100)))) as 'desctotal', sum(productos.precio) as 'totalnodesc'
+											FROM productos INNER JOIN carrito ON productos.idproductos = carrito.id_producto 
+											WHERE carrito.idcliente = $ID";
+
+											$Resultapre = mysqli_query($conn, $sql);
 											foreach ($Resultapre as $row) {
 												$totalConDesc = $row["desctotal"];
 												$totalSinDesc = $row["totalnodesc"];
 												$cont = $row["cont"];
 											}
 										}
+										
 										?>
 										<small><?php if ($ID == null) {
 													echo "0";
@@ -217,7 +227,12 @@
 										</h5>
 									</div>
 									<div class="cart-btns">
-										<a href="verCarrito.php?ID=<?php echo $ID; ?>&Row=<?php echo $cont; ?>" type="submit">Ver carrito</a>
+										<?php if ($Username == null){
+											echo '<a href="verCarrito.php" type="submit">Ver carrito</a>';
+										}else{
+											echo '<a href="verCarrito.php?ID='.$ID.'&Row='.$cont.' type="submit">Ver carrito</a>';
+										}?>
+										
 
 										<a href="checkout.php">Checkout <i class="fa fa-arrow-circle-right"></i></a>
 									</div>
@@ -448,8 +463,8 @@
 							<div class="count" id="countdown"></div>
 						</ul>
 
-						<h2 class="text-uppercase">Hay ofertas esta semana</h2>
-						<p>NUEVA COLECCIÓN HASTA 50% DE DESCUENTO</p>
+						<h2 id="text1" class="text-uppercase">Hay ofertas esta semana</h2>
+						<p id="text2">NUEVA COLECCIÓN HASTA 50% DE DESCUENTO</p>
 						<a class="primary-btn cta-btn" href="store.php">Comprar ahora</a>
 					</div>
 				</div>
@@ -1094,7 +1109,7 @@
 	<script src="js/nouislider.min.js"></script>
 	<script src="js/jquery.zoom.min.js"></script>
 	<script src="js/main.js"></script>
-	<script src="js/funciones.js"></script>
+	<!-- <script src="js/funciones.js"></script> -->
 	<script src="js/reloj/countdown-timezone/js/countdown.js"></script>
 	<script src="js/reloj/countdown-timezone/js/countdown.jquery.js"></script>
 

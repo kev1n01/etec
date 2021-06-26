@@ -26,12 +26,17 @@
 
  		<!-- Custom stlylesheet -->
  		<link type="text/css" rel="stylesheet" href="css/style.css"/>
+		 <link rel="icon" href="img/favi.ico" type="image/x-icon">
 
 		 <?php
 		$Username = null;
 		if(!empty($_SESSION["Username"]))
 		{
 			$Username = $_SESSION["Username"];
+		}
+		$ID = null;
+		if (!empty($_GET['ID'])) {
+			$ID = $_GET['ID'];
 		}
 		?>
 
@@ -49,9 +54,14 @@
 					</ul>
 					<ul class="header-links pull-right">
 						<!-- <li><a href=""><i class="fa fa-dollar"></i> USD</a></li> -->
-						<?php if($Username == null){echo '<li><a href="registro.php?ActionType=Register "><i class="fa fa-user-circle"></i>Registrarme</a></li>';} ?>
-						<?php if($Username == null){echo '<li><a href="login.php?Role=User"><i class="fa fa-user-circle-o"></i>Iniciar sesion</a></li>';} else {echo '<li><i class="fa fa-sign-in"></i><a href="Logout.php">Salir</a></li>';} ?>
-
+						<?php if ($Username == null) {
+                       	 	echo '<li><a href="registro.php?ActionType=Register "><i class="fa fa-user-circle"></i>Registrarme</a></li>';} ?>
+						<?php if ($ID != null) {
+							echo '<li><a href="registro.php?ActionType=Edit&ID=' . $ID . '"><i class="fa fa-cog"></i>Editar mis datos</a></li>';} ?>
+						<?php if ($Username == null) {
+							echo '<li><a href="login.php?Role=User"><i class="fa fa-user-circle-o"></i>Iniciar sesion</a></li>';
+						} else {
+							echo '<li><i class="fa fa-sign-in"></i><a href="Logout.php">Salir</a></li>';} ?>
 					</ul>
 				</div>
 			</div>
@@ -485,15 +495,22 @@
 								<li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
 							</ul>
 							<p>
-								<?php echo '<strong>'.$Username.'</strong>'; ?><br>
-								<strong>
-									<?php //if($Username != null){echo '<a href="ManageAccount.php?Role=User">Manage Account</a> |';} ?> 
-									<?php if($Username == null){echo '<a href="login.php?Role=User">Ingresar</a>';} else {echo '<a href="Logout.php">Salir</a>';} ?> | 
-									<a href="#">Volver al inicio</a>
-								</strong>
-								<p>
-								Copyright &copy;<script>document.write(new Date().getFullYear());</script> Todos los derechos reservados | Tienda Online de <a href="index.php" target="_blank">Etec</a>
-								</p> 
+							<?php echo '<strong>' . $Username . '</strong>'; ?><br>
+							<strong>
+								<?php //if($Username != null){echo '<a href="ManageAccount.php?Role=User">Manage Account</a> |';} 
+								?>
+								<?php if ($Username == null) {
+									echo '<a href="login.php?Role=User">Ingresar</a>';
+								} else {
+									echo '<a href="Logout.php">Salir</a>';
+								} ?> |
+								<a href="#">Volver al inicio</a>
+							</strong>
+							<p>
+								Copyright &copy;<script>
+									document.write(new Date().getFullYear());
+								</script> Todos los derechos reservados | Tienda Online de <a href="index.php" target="_blank">Etec</a>
+							</p>
 							</p>
 						</div>
 					</div>
